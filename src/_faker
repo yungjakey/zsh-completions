@@ -1,0 +1,111 @@
+#compdef faker
+
+# Zsh completion for faker CLI
+# https://faker.readthedocs.io/
+
+_faker() {
+  local curcontext="$curcontext" state line
+  typeset -A opt_args
+
+  # Get list of available locales (static list based on common Faker locales)
+  local -a locales
+  locales=(
+    'ar_AA' 'ar_EG' 'ar_JO' 'ar_PS' 'ar_SA'
+    'bg_BG' 'bn_BD' 'bs_BA'
+    'cs_CZ'
+    'da_DK' 'de' 'de_AT' 'de_CH' 'de_DE'
+    'dk_DK'
+    'el_GR' 'en' 'en_AU' 'en_CA' 'en_GB' 'en_IE' 'en_IN' 'en_NZ' 'en_PH' 'en_TH' 'en_US'
+    'es' 'es_AR' 'es_CA' 'es_CL' 'es_CO' 'es_ES' 'es_MX'
+    'et_EE'
+    'fa_IR' 'fi_FI' 'fil_PH' 'fr_BE' 'fr_CA' 'fr_CH' 'fr_FR' 'fr_QC'
+    'ga_IE'
+    'he_IL' 'hi_IN' 'hr_HR' 'hu_HU' 'hy_AM'
+    'id_ID' 'it_IT'
+    'ja_JP'
+    'ka_GE' 'ko_KR'
+    'la' 'lb_LU' 'lt_LT' 'lv_LV'
+    'mt_MT'
+    'ne_NP' 'nl_BE' 'nl_NL' 'no_NO'
+    'or_IN'
+    'pl_PL' 'pt_BR' 'pt_PT'
+    'ro_RO' 'ru_RU'
+    'sk_SK' 'sl_SI' 'sq_AL' 'sv_SE'
+    'ta_IN' 'th' 'th_TH' 'tl_PH' 'tr_TR' 'tw_GH'
+    'uk_UA'
+    'vi_VN'
+    'zh_CN' 'zh_TW'
+  )
+
+  # Common faker providers/fakes
+  local -a fakes
+  fakes=(
+    'address' 'building_number' 'city' 'city_suffix' 'country' 'country_code'
+    'current_country' 'current_country_code' 'postcode' 'street_address'
+    'street_name' 'street_suffix'
+    'name' 'first_name' 'last_name' 'name_male' 'name_female' 'prefix'
+    'suffix' 'first_name_male' 'first_name_female' 'last_name_male'
+    'last_name_female'
+    'email' 'safe_email' 'free_email' 'company_email' 'free_email_domain'
+    'ascii_email' 'ascii_safe_email' 'ascii_free_email' 'ascii_company_email'
+    'company' 'company_suffix' 'catch_phrase' 'bs'
+    'phone_number' 'msisdn'
+    'text' 'word' 'words' 'sentence' 'sentences' 'paragraph' 'paragraphs'
+    'date' 'date_between' 'date_between_dates' 'date_object' 'date_of_birth'
+    'date_this_century' 'date_this_decade' 'date_this_month' 'date_this_year'
+    'date_time' 'date_time_ad' 'date_time_between' 'date_time_between_dates'
+    'date_time_this_century' 'date_time_this_decade' 'date_time_this_month'
+    'date_time_this_year' 'future_date' 'future_datetime' 'month' 'month_name'
+    'past_date' 'past_datetime' 'time' 'time_delta' 'time_object' 'time_series'
+    'timezone' 'unix_time' 'year'
+    'credit_card_number' 'credit_card_provider' 'credit_card_security_code'
+    'credit_card_expire' 'credit_card_full'
+    'ipv4' 'ipv4_private' 'ipv4_public' 'ipv6' 'mac_address'
+    'url' 'uri' 'uri_path' 'uri_extension' 'domain_name' 'domain_word'
+    'tld' 'slug' 'image_url' 'hostname' 'http_method'
+    'user_name' 'password'
+    'uuid4' 'sha1' 'sha256' 'md5'
+    'boolean' 'null_boolean' 'binary' 'language_code' 'locale' 'color_name'
+    'hex_color' 'rgb_color' 'rgb_css_color' 'safe_color_name' 'safe_hex_color'
+    'file_name' 'file_extension' 'file_path' 'mime_type' 'unix_device'
+    'unix_partition'
+    'ssn' 'job' 'profile' 'simple_profile'
+    'aba' 'bank_country' 'bban' 'iban' 'swift' 'swift8' 'swift11'
+    'license_plate'
+    'latitude' 'longitude' 'local_latlng' 'location_on_land' 'latlng'
+    'coordinate'
+    'ean' 'ean8' 'ean13' 'isbn10' 'isbn13'
+    'currency' 'currency_code' 'currency_name' 'currency_symbol'
+    'cryptocurrency' 'cryptocurrency_code' 'cryptocurrency_name'
+    'pricetag' 'pydecimal' 'pyfloat' 'pyint' 'pyiterable' 'pylist' 'pyset'
+    'pystr' 'pystr_format' 'pystruct' 'pytuple' 'random_choices'
+    'random_digit' 'random_digit_not_null' 'random_element' 'random_elements'
+    'random_int' 'random_letter' 'random_letters' 'random_lowercase_letter'
+    'random_number' 'random_sample' 'random_uppercase_letter' 'randomize_nb_elements'
+  )
+
+  _arguments -C \
+    '(- *)'{-h,--help}'[show help message]' \
+    '(- *)--version[show version number]' \
+    '(-o --output)'{-o,--output}'[redirect output to file]:output file:_files' \
+    '(-l --locale)'{-l,--locale}'[use localized provider]:locale:->locales' \
+    '(-r --repeat)'{-r,--repeat}'[generate specified number of outputs]:repeat count' \
+    '(-s --sep)'{-s,--sep}'[separator after each output]:separator' \
+    '(-i --include)'{-i,--include}'[custom providers to use]:custom provider' \
+    '1:fake:->fakes' \
+    '*:fake arguments:' \
+    && return 0
+
+  case $state in
+    locales)
+      _describe -t locales 'available locales' locales && return 0
+      ;;
+    fakes)
+      _describe -t fakes 'faker providers' fakes && return 0
+      ;;
+  esac
+
+  return 1
+}
+
+_faker "$@"
