@@ -1,6 +1,6 @@
 #compdef poetry
 
-_poetry_3026fdcdc427050f_complete()
+_poetry_ee768ae10f4ad99f_complete()
 {
     local state com cur
     local -a opts
@@ -225,5 +225,5 @@ _poetry_3026fdcdc427050f_complete()
     esac
 }
 
-_poetry_3026fdcdc427050f_complete "$@"
-compdef _poetry_3026fdcdc427050f_complete /Users/jk/Projects/personal/.dotfiles/poetry
+_poetry_ee768ae10f4ad99f_complete "$@"
+compdef _poetry_ee768ae10f4ad99f_complete /Users/jk/poetry
