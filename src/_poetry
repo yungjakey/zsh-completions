@@ -1,6 +1,6 @@
 #compdef poetry
 
-_poetry_ee768ae10f4ad99f_complete()
+_poetry_0b464bd215970351_complete()
 {
     local state com cur
     local -a opts
@@ -225,5 +225,5 @@ _poetry_ee768ae10f4ad99f_complete()
     esac
 }
 
-_poetry_ee768ae10f4ad99f_complete "$@"
-compdef _poetry_ee768ae10f4ad99f_complete /Users/jk/poetry
+_poetry_0b464bd215970351_complete "$@"
+compdef _poetry_0b464bd215970351_complete /Users/jk/Projects/personal/zsh-completions/poetry

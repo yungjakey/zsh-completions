@@ -1,0 +1,443 @@
+#compdef opencode oc
+#description AI coding agent
+# ------------------------------------------------------------------------------
+# Copyright (c) 2025 Github zsh-users - https://github.com/zsh-users
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#     * Neither the name of the zsh-users nor the
+#       names of its contributors may be used to endorse or promote products
+#       derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL ZSH-USERS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# ------------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Completion script for OpenCode (https://opencode.ai).
+#
+# ------------------------------------------------------------------------------
+# Authors
+# -------
+#
+#  * Your Name (https://github.com/yourusername)
+#
+# ------------------------------------------------------------------------------
+
+_opencode() {
+  local curcontext="$curcontext" state state_descr line
+  typeset -A opt_args
+  
+  local -a global_flags
+  global_flags=(
+    '(- *)'{-h,--help}'[Display help]'
+    '(- *)'{-v,--version}'[Print version number]'
+    '--print-logs[Print logs to stderr]'
+    '--log-level=[Log level]:level:(DEBUG INFO WARN ERROR)'
+  )
+
+  _arguments -C \
+    $global_flags \
+    '1: :_opencode_commands' \
+    '*::arg:->args' \
+    && return 0
+
+  case $state in
+    (args)
+      case $words[1] in
+        (agent)
+          _opencode_agent
+          ;;
+        (auth)
+          _opencode_auth
+          ;;
+        (github)
+          _opencode_github
+          ;;
+        (mcp)
+          _opencode_mcp
+          ;;
+        (models)
+          _opencode_models
+          ;;
+        (run)
+          _opencode_run
+          ;;
+        (serve)
+          _opencode_serve
+          ;;
+        (session)
+          _opencode_session
+          ;;
+        (stats)
+          _opencode_stats
+          ;;
+        (export)
+          _opencode_export
+          ;;
+        (import)
+          _opencode_import
+          ;;
+        (web)
+          _opencode_web
+          ;;
+        (acp)
+          _opencode_acp
+          ;;
+        (uninstall)
+          _opencode_uninstall
+          ;;
+        (upgrade)
+          _opencode_upgrade
+          ;;
+        (*)
+          _opencode_tui
+          ;;
+      esac
+      ;;
+  esac
+}
+
+(( $+functions[_opencode_commands] )) ||
+_opencode_commands() {
+  local -a commands
+  commands=(
+    'agent:Manage agents for OpenCode'
+    'auth:Manage credentials and login for providers'
+    'github:Manage the GitHub agent for repository automation'
+    'mcp:Manage Model Context Protocol servers'
+    'models:List all available models from configured providers'
+    'run:Run OpenCode in non-interactive mode'
+    'serve:Start a headless OpenCode server for API access'
+    'session:Manage OpenCode sessions'
+    'stats:Show token usage and cost statistics'
+    'export:Export session data as JSON'
+    'import:Import session data from JSON file or URL'
+    'web:Start a headless OpenCode server with web interface'
+    'acp:Start an ACP (Agent Client Protocol) server'
+    'uninstall:Uninstall OpenCode and remove all related files'
+    'upgrade:Update OpenCode to the latest version'
+  )
+  _describe -t commands 'opencode command' commands
+}
+
+(( $+functions[_opencode_tui] )) ||
+_opencode_tui() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '(-c --continue)'{-c,--continue}'[Continue the last session]' \
+    '(-s --session)'{-s,--session=}'[Session ID to continue]:session id' \
+    '(-p --prompt)'{-p,--prompt=}'[Prompt to use]:prompt' \
+    '(-m --model)'{-m,--model=}'[Model to use in the form of provider/model]:model' \
+    '--agent=[Agent to use]:agent' \
+    '--port=[Port to listen on]:port' \
+    '--hostname=[Hostname to listen on]:hostname' \
+    '*:project:_directories'
+}
+
+(( $+functions[_opencode_agent] )) ||
+_opencode_agent() {
+  local curcontext="$curcontext" state state_descr line
+  typeset -A opt_args
+
+  _arguments -C \
+    '1: :_opencode_agent_commands' \
+    '*::arg:->args'
+
+  case $state in
+    (args)
+      case $words[1] in
+        (create|list)
+          _arguments \
+            '(- *)'{-h,--help}'[Show help message and quit]'
+          ;;
+      esac
+      ;;
+  esac
+}
+
+(( $+functions[_opencode_agent_commands] )) ||
+_opencode_agent_commands() {
+  local -a commands
+  commands=(
+    'create:Create a new agent with custom configuration'
+    'list:List all available agents'
+  )
+  _describe -t commands 'agent command' commands
+}
+
+(( $+functions[_opencode_auth] )) ||
+_opencode_auth() {
+  local curcontext="$curcontext" state state_descr line
+  typeset -A opt_args
+
+  _arguments -C \
+    '1: :_opencode_auth_commands' \
+    '*::arg:->args'
+
+  case $state in
+    (args)
+      case $words[1] in
+        (login|list|ls|logout)
+          _arguments \
+            '(- *)'{-h,--help}'[Show help message and quit]'
+          ;;
+      esac
+      ;;
+  esac
+}
+
+(( $+functions[_opencode_auth_commands] )) ||
+_opencode_auth_commands() {
+  local -a commands
+  commands=(
+    'login:Configure API keys for providers'
+    'list:List all authenticated providers'
+    'ls:List all authenticated providers (short)'
+    'logout:Log out of a provider'
+  )
+  _describe -t commands 'auth command' commands
+}
+
+(( $+functions[_opencode_github] )) ||
+_opencode_github() {
+  local curcontext="$curcontext" state state_descr line
+  typeset -A opt_args
+
+  _arguments -C \
+    '1: :_opencode_github_commands' \
+    '*::arg:->args'
+
+  case $state in
+    (args)
+      case $words[1] in
+        (install)
+          _arguments \
+            '(- *)'{-h,--help}'[Show help message and quit]'
+          ;;
+        (run)
+          _arguments \
+            '(- *)'{-h,--help}'[Show help message and quit]' \
+            '--event=[GitHub mock event to run the agent for]:event' \
+            '--token=[GitHub personal access token]:token'
+          ;;
+      esac
+      ;;
+  esac
+}
+
+(( $+functions[_opencode_github_commands] )) ||
+_opencode_github_commands() {
+  local -a commands
+  commands=(
+    'install:Install the GitHub agent in your repository'
+    'run:Run the GitHub agent'
+  )
+  _describe -t commands 'github command' commands
+}
+
+(( $+functions[_opencode_mcp] )) ||
+_opencode_mcp() {
+  local curcontext="$curcontext" state state_descr line
+  typeset -A opt_args
+
+  _arguments -C \
+    '1: :_opencode_mcp_commands' \
+    '*::arg:->args'
+
+  case $state in
+    (args)
+      case $words[1] in
+        (add|list|ls)
+          _arguments \
+            '(- *)'{-h,--help}'[Show help message and quit]'
+          ;;
+        (auth)
+          _arguments -C \
+            '(- *)'{-h,--help}'[Show help message and quit]' \
+            '1: :_opencode_mcp_auth_commands' \
+            '*:server name'
+          ;;
+        (logout|debug)
+          _arguments \
+            '(- *)'{-h,--help}'[Show help message and quit]' \
+            '*:server name'
+          ;;
+      esac
+      ;;
+  esac
+}
+
+(( $+functions[_opencode_mcp_commands] )) ||
+_opencode_mcp_commands() {
+  local -a commands
+  commands=(
+    'add:Add an MCP server to your configuration'
+    'list:List all configured MCP servers'
+    'ls:List all configured MCP servers (short)'
+    'auth:Authenticate with an OAuth-enabled MCP server'
+    'logout:Remove OAuth credentials for an MCP server'
+    'debug:Debug OAuth connection issues'
+  )
+  _describe -t commands 'mcp command' commands
+}
+
+(( $+functions[_opencode_mcp_auth_commands] )) ||
+_opencode_mcp_auth_commands() {
+  local -a commands
+  commands=(
+    'list:List OAuth-capable servers and their authentication status'
+    'ls:List OAuth-capable servers (short)'
+  )
+  _describe -t commands 'mcp auth command' commands
+}
+
+(( $+functions[_opencode_models] )) ||
+_opencode_models() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '--refresh[Refresh the models cache from models.dev]' \
+    '--verbose[Use more verbose model output]' \
+    '*:provider'
+}
+
+(( $+functions[_opencode_run] )) ||
+_opencode_run() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '--command=[The command to run]:command' \
+    '(-c --continue)'{-c,--continue}'[Continue the last session]' \
+    '(-s --session)'{-s,--session=}'[Session ID to continue]:session id' \
+    '--share[Share the session]' \
+    '(-m --model)'{-m,--model=}'[Model to use in the form of provider/model]:model' \
+    '--agent=[Agent to use]:agent' \
+    '(-f --file)'{-f,--file=}'[File(s) to attach to message]:file:_files' \
+    '--format=[Format output]:format:(default json)' \
+    '--title=[Title for the session]:title' \
+    '--attach=[Attach to a running opencode server]:url' \
+    '--port=[Port for the local server]:port' \
+    '*:message'
+}
+
+(( $+functions[_opencode_serve] )) ||
+_opencode_serve() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '(-p --port)'{-p,--port=}'[Port to listen on]:port' \
+    '--hostname=[Hostname to listen on]:hostname'
+}
+
+(( $+functions[_opencode_session] )) ||
+_opencode_session() {
+  local curcontext="$curcontext" state state_descr line
+  typeset -A opt_args
+
+  _arguments -C \
+    '1: :_opencode_session_commands' \
+    '*::arg:->args'
+
+  case $state in
+    (args)
+      case $words[1] in
+        (list)
+          _arguments \
+            '(- *)'{-h,--help}'[Show help message and quit]' \
+            '(-n --max-count)'{-n,--max-count=}'[Limit to N most recent sessions]:count' \
+            '--format=[Output format]:format:(table json)'
+          ;;
+      esac
+      ;;
+  esac
+}
+
+(( $+functions[_opencode_session_commands] )) ||
+_opencode_session_commands() {
+  local -a commands
+  commands=(
+    'list:List all OpenCode sessions'
+  )
+  _describe -t commands 'session command' commands
+}
+
+(( $+functions[_opencode_stats] )) ||
+_opencode_stats() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '--days=[Show stats for the last N days]:days' \
+    '--tools=[Number of tools to show]:count' \
+    '--project=[Filter by project]:project'
+}
+
+(( $+functions[_opencode_export] )) ||
+_opencode_export() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '*:session ID'
+}
+
+(( $+functions[_opencode_import] )) ||
+_opencode_import() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '*:file or URL:_files -g "*.json"'
+}
+
+(( $+functions[_opencode_web] )) ||
+_opencode_web() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '(-p --port)'{-p,--port=}'[Port to listen on]:port' \
+    '--hostname=[Hostname to listen on]:hostname'
+}
+
+(( $+functions[_opencode_acp] )) ||
+_opencode_acp() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '--cwd=[Working directory]:directory:_directories' \
+    '--port=[Port to listen on]:port' \
+    '--hostname=[Hostname to listen on]:hostname'
+}
+
+(( $+functions[_opencode_uninstall] )) ||
+_opencode_uninstall() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '(-c --keep-config)'{-c,--keep-config}'[Keep configuration files]' \
+    '(-d --keep-data)'{-d,--keep-data}'[Keep session data and snapshots]' \
+    '--dry-run[Show what would be removed without removing]' \
+    '(-f --force)'{-f,--force}'[Skip confirmation prompts]'
+}
+
+(( $+functions[_opencode_upgrade] )) ||
+_opencode_upgrade() {
+  _arguments \
+    '(- *)'{-h,--help}'[Show help message and quit]' \
+    '(-m --method)'{-m,--method=}'[Installation method]:method:(curl npm pnpm bun brew)' \
+    '*:target version'
+}
+
+_opencode "$@"
+
+# Local Variables:
+# mode: Shell-Script
+# sh-indentation: 2
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# End:
+# vim: ft=zsh sw=2 ts=2 et
